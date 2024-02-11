@@ -11,6 +11,7 @@ import com.bilgeadam.repository.AuthRepository;
 import com.bilgeadam.utility.CodeGenerator;
 import com.bilgeadam.utility.ServiceManager;
 
+import com.bilgeadam.utility.enums.EStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -41,6 +42,15 @@ public class AuthService extends ServiceManager<Auth, Long> {
         }
         return true;
 
+    }
+
+    public Boolean checkActivationCode(String code){
+        Optional<Auth> authOptional = authRepository.findOptionalByActivationCode(code);
+        if(authOptional.isEmpty()){
+            throw new AuthManagerException(ErrorType.ACTIVATION_CODE_ERROR);
+        }
+        authOptional.get().setStatus(EStatus.ACTIVE);
+        return true;
     }
 
 
